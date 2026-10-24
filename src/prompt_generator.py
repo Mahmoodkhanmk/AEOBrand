@@ -7,10 +7,8 @@ from models import BaselineConfig, SyntheticPromptCollection
 # Load environment variables (e.g., OPENAI_API_KEY)
 load_dotenv()
 
-# Initialize OpenAI Client (will pick up OPENAI_API_KEY from env automatically)
-# We handle the case where it might be None for safe fallback testing
 api_key = os.getenv("OPENAI_API_KEY")
-client = OpenAI(api_key=api_key) if api_key else None
+client = OpenAI(api_key=api_key) if api_key and api_key != "your_openai_api_key_here" else None
 
 def generate_synthetic_prompts(config: BaselineConfig, num_prompts: int = 10) -> SyntheticPromptCollection:
     """

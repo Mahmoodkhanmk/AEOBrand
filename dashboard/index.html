@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEOBrand — Enterprise AI Visibility Observatory</title>
+  <meta name="description" content="Measure and track how your brand is represented across Large Language Models. Visualise BVI, CMCS and CAS scores from any AEOBrand pipeline run." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── Header ─────────────────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🔭</div>
+      <div class="logo-text"><span>AEO</span>Brand</div>
+    </div>
+    <span class="header-badge">AI Visibility Observatory</span>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- Upload zone -->
+    <section id="upload-section" role="button" aria-label="Upload report JSON">
+      <div class="upload-icon">📂</div>
+      <h2>Load a Pipeline Report</h2>
+      <p>Drag &amp; drop a <code>reports/*.json</code> file here, or click to browse.<br/>
+         First time? Try the demo to see how it works.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="event.stopPropagation();document.getElementById('file-input').click()">
+          📁 Browse JSON file
+        </button>
+        <button class="btn btn-ghost" onclick="event.stopPropagation();loadDemo()">
+          ✨ Load Demo Report
+        </button>
+      </div>
+      <input type="file" id="file-input" accept=".json" style="display:none" />
+    </section>
+
+    <!-- Dashboard (hidden until report loaded) -->
+    <div id="dashboard">
+
+      <!-- Run metadata bar -->
+      <div class="run-meta animate-in delay-1">
+        <div class="run-meta-item">
+          <span class="run-meta-label">Brand</span>
+          <span class="run-meta-value" id="meta-brand">—</span>
+        </div>
+        <div class="run-meta-divider"></div>
+        <div class="run-meta-item">
+          <span class="run-meta-label">Run ID</span>
+          <span class="run-meta-value" id="meta-runid" style="font-family:'JetBrains Mono',monospace">—</span>
+        </div>
+        <div class="run-meta-divider"></div>
+        <div class="run-meta-item">
+          <span class="run-meta-label">Timestamp</span>
+          <span class="run-meta-value" id="meta-timestamp">—</span>
+        </div>
+        <div class="run-meta-divider"></div>
+        <div class="run-meta-item">
+          <span class="run-meta-label">Prompts</span>
+          <span class="run-meta-value" id="meta-prompts">—</span>
+        </div>
+        <div class="run-meta-divider"></div>
+        <div class="run-meta-item">
+          <span class="run-meta-label">Keywords</span>
+          <span class="run-meta-value" id="meta-keywords">—</span>
+        </div>
+        <div style="margin-left:auto">
+          <button class="btn btn-ghost" onclick="resetDashboard()" style="font-size:12px;padding:8px 16px">
+            ↩ Load another
+          </button>
+        </div>
+      </div>
+
+      <!-- Score cards -->
+      <div class="score-grid">
+
+        <div class="score-card bvi animate-in delay-2" id="score-bvi">
+          <div class="score-label">BVI</div>
+          <div class="score-name">Brand Visibility Index</div>
+          <div class="score-value">0%</div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" style="width:0%"></div>
+          </div>
+          <div class="score-interpretation">Loading…</div>
+        </div>
+
+        <div class="score-card cmcs animate-in delay-3" id="score-cmcs">
+          <div class="score-label">CMCS</div>
+          <div class="score-name">Cross-Model Consistency Score</div>
+          <div class="score-value">0%</div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" style="width:0%"></div>
+          </div>
+          <div class="score-interpretation">Loading…</div>
+        </div>
+
+        <div class="score-card cas animate-in delay-4" id="score-cas">
+          <div class="score-label">CAS</div>
+          <div class="score-name">Citation Authority Score</div>
+          <div class="score-value">0%</div>
+          <div class="score-bar-track">
+            <div class="score-bar-fill" style="width:0%"></div>
+          </div>
+          <div class="score-interpretation">Loading…</div>
+        </div>
+
+      </div>
+
+      <!-- Sentiment + Competitors -->
+      <div class="two-col animate-in delay-3">
+
+        <div class="card">
+          <div class="section-title">😊 Brand Sentiment</div>
+          <div class="sentiment-display" id="sentiment-display">
+            <div class="sentiment-emoji">⏳</div>
+            <div class="sentiment-label">Loading…</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">🏆 Competitor Mentions</div>
+          <div class="competitor-list" id="competitor-list">
+            <p style="color:var(--text-muted);font-size:13px">Loading…</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Citations -->
+      <div class="card animate-in delay-4" style="margin-bottom:32px">
+        <div class="section-title">📎 Top Cited Sources</div>
+        <div class="citation-list" id="citation-list">
+          <p style="color:var(--text-muted);font-size:13px">Loading…</p>
+        </div>
+      </div>
+
+      <!-- Prompt evaluation table -->
+      <div class="section-title animate-in delay-5">📋 Per-Prompt Evaluation Results</div>
+      <div class="table-wrapper animate-in delay-5">
+        <table>
+          <thead>
+            <tr>
+              <th>Prompt</th>
+              <th>Intent</th>
+              <th>Brand Mentioned</th>
+              <th>Sentiment</th>
+              <th>Citations</th>
+            </tr>
+          </thead>
+          <tbody id="eval-tbody">
+            <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:32px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /#dashboard -->
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────────────────────── -->
+  <footer>
+    <p>AEOBrand Enterprise AI Visibility Observatory &mdash; Run <code>python src/main.py</code> to generate a report JSON, then drag it here.</p>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    function resetDashboard() {
+      document.getElementById('dashboard').style.display     = 'none';
+      document.getElementById('upload-section').style.display = '';
+      document.getElementById('file-input').value            = '';
+    }
+  </script>
+
+</body>
+</html>
