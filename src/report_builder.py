@@ -18,9 +18,11 @@ from models import (
     BaselineConfig,
     BrandScore,
     ChunkEvaluation,
+    PromptDiversityReport,
     RunReport,
     SyntheticPrompt,
 )
+from typing import Optional
 
 # Reports are saved relative to the project root (one level up from src/)
 _REPORTS_DIR = Path(__file__).parent.parent / "reports"
@@ -31,26 +33,29 @@ def build_report(
     prompts: list[SyntheticPrompt],
     evaluations: list[ChunkEvaluation],
     score: BrandScore,
+    diversity_report: Optional[PromptDiversityReport] = None,
 ) -> RunReport:
     """
     Assemble and persist a RunReport.
 
     Args:
-        config:      The original BaselineConfig for this run
-        prompts:     All synthetic prompts that were dispatched
-        evaluations: ChunkEvaluation for each successful response
-        score:       Computed BrandScore metrics
+        config:           The original BaselineConfig for this run
+        prompts:          All synthetic prompts that were dispatched
+        evaluations:      ChunkEvaluation for each successful response
+        score:            Computed BrandScore metrics
+        diversity_report: Optional prompt quality report from Phase 1
 
     Returns:
         RunReport — the saved report object
     """
-    run_id    = str(uuid.uuid4())[:8]          # short 8-char ID, e.g. "a3f92b1c"
+    run_id    = str(uuid.uuid4())[:8]
     timestamp = datetime.now(timezone.utc).isoformat()
 
     report = RunReport(
         run_id=run_id,
         timestamp=timestamp,
         config=config,
+        diversity_report=diversity_report,
         prompts_used=prompts,
         evaluations=evaluations,
         score=score,

@@ -1,0 +1,77 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# AEOBrand Brand Configuration File
+# ─────────────────────────────────────────────────────────────────────────────
+# This file is loaded by src/config_loader.py and validated against the
+# BaselineConfig Pydantic schema in src/models.py.
+#
+# Run: python src/main.py --config configs/aeobrand.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── Core Identity ─────────────────────────────────────────────────────────────
+brand_name: "AEOBrand"
+
+competitors:
+  - "Semrush"
+  - "BrightEdge"
+  - "Conductor"
+  - "Botify"
+
+keywords:
+  - "Answer Engine Optimization"
+  - "AI brand visibility"
+  - "LLM brand tracking"
+  - "AI search monitoring"
+  - "generative AI SEO"
+  - "brand mentions in ChatGPT"
+
+domain_context: >
+  AEOBrand is a B2B SaaS platform that measures, analyzes, and monitors
+  how enterprise brands are represented across Large Language Models including
+  ChatGPT, Claude, Gemini, and Perplexity. It transforms opaque AI outputs
+  into mathematically verifiable brand visibility metrics.
+
+# ── Industry & Geography ──────────────────────────────────────────────────────
+industry: "B2B SaaS / MarTech"
+
+geography:
+  - "United States"
+  - "United Kingdom"
+  - "Canada"
+  - "Australia"
+
+# ── Products & Use Cases ──────────────────────────────────────────────────────
+product_lines:
+  - "AEO Analytics Dashboard"
+  - "Brand Visibility Monitor"
+  - "Competitive Intelligence Suite"
+  - "LLM Citation Tracker"
+
+use_cases:
+  - "track brand mentions across AI assistants"
+  - "measure brand sentiment in LLM responses"
+  - "benchmark brand visibility against competitors"
+  - "identify which AI models mention competitors more"
+  - "monitor citation authority across AI-generated content"
+
+# ── Target Audience ───────────────────────────────────────────────────────────
+target_audience: "CMOs and digital marketing directors at mid-to-large enterprises"
+
+# ── Prompt Generation Controls ────────────────────────────────────────────────
+num_prompts: 15
+
+# Percentage split across 6 intent categories — MUST sum to 100
+intent_mix:
+  informational: 25   # "What is / How does..."
+  comparative:   25   # "X vs Y / Compare..."
+  transactional: 15   # "How to buy / pricing..."
+  problem_aware: 15   # "How do I solve..."
+  feature_aware: 10   # "Does X support..."
+  alternative:   10   # "What are alternatives to..."
+
+# ── Quality Controls ──────────────────────────────────────────────────────────
+negative_keywords:
+  - "lawsuit"
+  - "scandal"
+  - "hack"
+
+min_diversity_score: 0.75
