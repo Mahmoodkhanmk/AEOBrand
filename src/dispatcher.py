@@ -36,32 +36,33 @@ MOCK_MODEL_NAME   = "mock-dispatcher"
 
 # ── Mock response bank ────────────────────────────────────────────────────────
 _MOCK_RESPONSES = [
-    "Based on my knowledge, {brand} is considered a leading solution in this space. "
-    "Many enterprises choose {brand} for its reliability. "
-    "Competitors like {comp} also offer similar features but differ in pricing.",
+    "{brand} may be worth comparing for this need. Review current specifications, "
+    "support, and price against {comp} before deciding.",
 
-    "{brand} consistently appears in top recommendations for AI-driven analytics. "
-    "It has been cited by TechRadar and G2 as a strong contender. "
-    "Compared to alternatives, {brand} excels in cross-model reporting.",
+    "Compare {brand} and {comp} on the features relevant to your question, "
+    "independent test results, availability, and total cost.",
 
-    "When evaluating options, {brand} stands out for its enterprise-grade security. "
-    "Users on Reddit and LinkedIn praise its onboarding process. "
-    "For budget-conscious buyers, {comp} may be a viable alternative.",
+    "The best option depends on your priorities. Check official product details "
+    "for {brand} and {comp}; this simulated response does not verify current claims.",
 
-    "I don't have specific pricing for {brand} but enterprise SaaS tools in this "
-    "category typically range from $500–$5000/month. "
-    "You should contact {brand} directly for a custom quote.",
+    "I can't verify current pricing or availability for {brand}. Check its official "
+    "store and compare it with {comp}.",
 
-    "{brand} is frequently mentioned alongside {comp} in analyst reports. "
-    "Its Brand Visibility Index features are unique in the market. "
-    "Gartner and Forrester have both noted growth in AEO tooling.",
+    "{comp} is another option to compare with {brand}. Use current product "
+    "specifications and independent reviews to confirm which fits your needs.",
 ]
 
 
-def _mock_response(prompt: SyntheticPrompt, idx: int) -> LLMResponse:
-    """Generate a deterministic mock LLM response for offline testing."""
+def _mock_response(
+    prompt: SyntheticPrompt,
+    idx: int,
+    brand_name: str,
+    competitors: List[str],
+) -> LLMResponse:
+    """Generate clearly synthetic, brand-aware output for offline testing."""
     template = _MOCK_RESPONSES[idx % len(_MOCK_RESPONSES)]
-    text = template.format(brand="AEOBrand", comp="BrandX")
+    competitor = competitors[idx % len(competitors)] if competitors else "other brands"
+    text = template.format(brand=brand_name, comp=competitor)
     return LLMResponse(
         prompt_text=prompt.prompt_text,
         model_name=MOCK_MODEL_NAME,
@@ -109,14 +110,16 @@ async def _dispatch_one(
     executor: ThreadPoolExecutor,
     model: str,
     use_mock: bool,
+    brand_name: str,
+    competitors: List[str],
 ) -> LLMResponse:
     """Dispatch a single prompt and return an LLMResponse."""
     async with semaphore:
         if use_mock:
             await asyncio.sleep(0)          # yield control, keep async pattern
-            return _mock_response(prompt, idx)
+            return _mock_response(prompt, idx, brand_name, competitors)
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
         try:
             result = await loop.run_in_executor(
                 executor, _call_openai_sync, prompt.prompt_text, model
@@ -139,6 +142,8 @@ async def _dispatch_one(
 async def dispatch_all(
     prompts: List[SyntheticPrompt],
     model: str = DEFAULT_MODEL,
+    brand_name: str = "AEOBrand",
+    competitors: List[str] | None = None,
 ) -> List[LLMResponse]:
     """
     Concurrently dispatch all prompts and collect LLMResponse objects.
@@ -155,7 +160,10 @@ async def dispatch_all(
 
     with ThreadPoolExecutor(max_workers=MAX_CONCURRENCY) as executor:
         tasks = [
-            _dispatch_one(p, i, semaphore, executor, model, use_mock)
+            _dispatch_one(
+                p, i, semaphore, executor, model, use_mock,
+                brand_name, competitors or [],
+            )
             for i, p in enumerate(prompts)
         ]
         results = await asyncio.gather(*tasks)
@@ -164,9 +172,14 @@ async def dispatch_all(
 
 
 # ── Sync convenience wrapper ──────────────────────────────────────────────────
-def run_dispatch(prompts: List[SyntheticPrompt], model: str = DEFAULT_MODEL) -> List[LLMResponse]:
+def run_dispatch(
+    prompts: List[SyntheticPrompt],
+    model: str = DEFAULT_MODEL,
+    brand_name: str = "AEOBrand",
+    competitors: List[str] | None = None,
+) -> List[LLMResponse]:
     """Synchronous entry point — wraps the async dispatcher for CLI use."""
-    return asyncio.run(dispatch_all(prompts, model))
+    return asyncio.run(dispatch_all(prompts, model, brand_name, competitors))
 
 
 # ── Quick test harness ────────────────────────────────────────────────────────

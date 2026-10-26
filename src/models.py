@@ -19,7 +19,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 # ── Enums ─────────────────────────────────────────────────────────────────────
@@ -56,6 +56,8 @@ class IntentMix(BaseModel):
     Controls the percentage split of generated prompts across intent categories.
     Values must be integers summing to 100.
     """
+    model_config = ConfigDict(extra="forbid")
+
     informational: int = Field(default=25, ge=0, le=100)
     comparative:   int = Field(default=25, ge=0, le=100)
     transactional: int = Field(default=15, ge=0, le=100)
@@ -102,6 +104,8 @@ class BaselineConfig(BaseModel):
     Loaded from a YAML file (configs/*.yaml) or constructed programmatically.
     All fields are validated on construction via Pydantic.
     """
+
+    model_config = ConfigDict(extra="forbid")
 
     # ── Core identity ─────────────────────────────────────────────────────────
     brand_name:     str = Field(..., min_length=1, description="The brand to track")
@@ -281,6 +285,7 @@ class RunReport(BaseModel):
     """
     run_id:           str
     timestamp:        str
+    execution_mode:   str = "live"
     config:           BaselineConfig
     diversity_report: Optional[PromptDiversityReport] = None
     prompts_used:     List[SyntheticPrompt]

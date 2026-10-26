@@ -54,9 +54,17 @@ function readFile(file) {
 
 // ── Render dashboard ──────────────────────────────────────────────────────────
 function renderDashboard(report) {
+  if (!report || !report.config || !report.score || !Array.isArray(report.evaluations)) {
+    alert('Invalid report structure. Please upload a valid AEOBrand report.');
+    return;
+  }
   currentReport = report;
   uploadSection.style.display = 'none';
   dashboard.style.display     = 'block';
+  const simulationNotice = document.getElementById('simulation-notice');
+  if (simulationNotice) {
+    simulationNotice.style.display = report.execution_mode === 'simulated' ? 'block' : 'none';
+  }
 
   renderMeta(report);
   renderScoreCards(report.score);
@@ -150,7 +158,7 @@ function renderCompetitors(score) {
   container.innerHTML = entries.map(([name, count]) => `
     <div class="competitor-row">
       <div class="competitor-row-header">
-        <span class="competitor-name">${name}</span>
+        <span class="competitor-name">${escHtml(name)}</span>
         <span class="competitor-count">${count} mention${count !== 1 ? 's' : ''}</span>
       </div>
       <div class="comp-bar-track">
@@ -178,7 +186,7 @@ function renderCitations(score) {
   }
 
   container.innerHTML = cits.map(c => `
-    <span class="citation-chip">🔗 ${c}</span>
+    <span class="citation-chip">🔗 ${escHtml(c)}</span>
   `).join('');
 }
 
@@ -205,11 +213,11 @@ function renderTable(evaluations, prompts_used) {
     return `
       <tr>
         <td style="max-width:360px;color:var(--text-primary)">${escHtml(ev.prompt_text)}</td>
-        <td><span class="badge ${intentBadge}">${intent}</span></td>
+        <td><span class="badge ${intentBadge}">${escHtml(intent)}</span></td>
         <td>${mentioned}</td>
-        <td><span class="badge ${sentBadge}">${ev.sentiment}</span></td>
+        <td><span class="badge ${sentBadge}">${escHtml(ev.sentiment)}</span></td>
         <td style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted)">
-          ${ev.citations && ev.citations.length ? ev.citations.slice(0,2).join(', ') : '—'}
+          ${ev.citations && ev.citations.length ? ev.citations.slice(0,2).map(escHtml).join(', ') : '—'}
         </td>
       </tr>
     `;
@@ -254,7 +262,8 @@ function interpretCAS(v) {
 }
 
 function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ── Demo report generator ─────────────────────────────────────────────────────

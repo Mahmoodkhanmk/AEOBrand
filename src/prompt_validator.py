@@ -14,8 +14,8 @@ What it checks:
 Diversity score formula:
   intent_variety    = unique_intents / 6                              × 0.40
   lexical_variety   = unique_first_bigrams / total_prompts            × 0.35
-  length_variety    = 1 - (std_dev_prompt_lengths / mean_length)     × 0.25
-                      (clamped 0–1)
+    length_variety    = min(1, std_dev_prompt_lengths / mean_length)   × 0.25
+                                            (higher length variation increases diversity)
   diversity_score   = intent_variety + lexical_variety + length_variety
 
 Target: ≥ 0.75 for production runs. Below 0.60 is a hard warning.
@@ -107,6 +107,10 @@ def validate_collection(
             "Consider increasing num_prompts or adjusting intent_mix to spread "
             "prompt types more evenly."
         )
+
+    # Empty input is unusable; a low diversity score remains a reported warning.
+    if not deduped:
+        raise ValueError("Prompt validation removed every prompt; no run can be evaluated.")
 
     # ── Build cleaned collection ──────────────────────────────────────────────
     cleaned = SyntheticPromptCollection(

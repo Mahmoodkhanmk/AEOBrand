@@ -83,9 +83,25 @@ def build_prompt_collection(config: BaselineConfig) -> SyntheticPromptCollection
     counts = config.intent_mix.to_counts(config.num_prompts)
 
     if _HAS_KEY and _client:
-        return _generate_live(config, counts)
+        collection = _generate_live(config, counts)
     else:
-        return _generate_from_templates(config, counts)
+        collection = _generate_from_templates(config, counts)
+
+    if len(collection.prompts) != config.num_prompts:
+        print(
+            f"  [prompt_generator] Generated {len(collection.prompts)} of "
+            f"{config.num_prompts} requested prompts; filling remainder from templates."
+        )
+        fallback = _generate_from_templates(config, counts)
+        seen = {p.prompt_text.casefold() for p in collection.prompts}
+        for prompt in fallback.prompts:
+            if prompt.prompt_text.casefold() not in seen:
+                collection.prompts.append(prompt)
+                seen.add(prompt.prompt_text.casefold())
+            if len(collection.prompts) >= config.num_prompts:
+                break
+
+    return collection
 
 
 # ── Live generation (GPT-4o) ──────────────────────────────────────────────────
@@ -164,8 +180,9 @@ def _build_system_prompt(
                 keywords    = config.keywords,
                 use_cases   = config.use_cases or ["brand visibility tracking"],
                 industry    = config.industry,
-                audience    = config.target_audience,
+                audience    = _audience_label(config.target_audience),
                 geography   = config.geography,
+                product_lines = config.product_lines,
                 index       = 0,
             )
             seed_lines.append(f'  [{cat.value}] "{rendered}"')
@@ -187,7 +204,7 @@ Industry:        {config.industry}
 Competitors:     {', '.join(config.competitors)}
 Keywords:        {', '.join(config.keywords)}
 Use Cases:       {', '.join(config.use_cases or ['brand visibility tracking'])}
-Target Audience: {config.target_audience}
+Target Audience: {_audience_label(config.target_audience)}
 Geography:       {', '.join(config.geography)}
 Domain Context:  {config.domain_context}
 {negative_block}
@@ -262,6 +279,12 @@ def _parse_llm_response(
     return result
 
 
+def _audience_label(audience: str) -> str:
+    """Use a concise audience label in prompts without copying long descriptions."""
+    first_group = audience.split(",", maxsplit=1)[0].strip()
+    return first_group or "consumer"
+
+
 # ── Template-based generation (mock / fallback) ───────────────────────────────
 
 def _generate_from_templates(
@@ -299,8 +322,9 @@ def _generate_from_templates(
                 keywords    = config.keywords,
                 use_cases   = config.use_cases or ["brand visibility tracking"],
                 industry    = config.industry,
-                audience    = config.target_audience,
+                audience    = _audience_label(config.target_audience),
                 geography   = config.geography,
+                product_lines = config.product_lines,
                 index       = global_index,
             )
             prompts.append(SyntheticPrompt(

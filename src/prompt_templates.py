@@ -21,6 +21,7 @@ Template syntax:
     {competitor}  — one competitor name (cycling through the list)
     {keyword}     — one keyword (cycling through the list)
     {use_case}    — one use case (cycling through the list)
+    {product_line}— one product line (cycling through the list)
     {industry}    — the industry string
     {audience}    — the target audience string
     {geo}         — the first geography string
@@ -37,92 +38,92 @@ TEMPLATES: dict[IntentCategory, list[str]] = {
     # ── Informational ─────────────────────────────────────────────────────────
     # User wants to learn. No brand loyalty yet. High volume in real AI queries.
     IntentCategory.INFORMATIONAL: [
-        "What are the best {keyword} tools available for {industry} companies?",
-        "How does {keyword} work and why does it matter for modern marketing?",
-        "What is {keyword} and how is it different from traditional SEO?",
-        "Can you explain {keyword} to a {audience} with no technical background?",
-        "What are the top-rated platforms for {keyword} in {geo}?",
-        "How do large enterprises measure {keyword} across multiple AI models?",
-        "What metrics are used to evaluate {keyword} performance?",
-        "Which {industry} companies are leading the space in {keyword}?",
-        "What should I know before investing in a {keyword} solution?",
-        "How has {keyword} evolved over the past two years?",
+        "What should I look for when choosing a {product_line} for {use_case}?",
+        "Which {industry} brands offer products suited to {use_case}?",
+        "What are the main differences between premium and budget {product_line}?",
+        "What should {audience} know before buying a {keyword}?",
+        "Which {product_line} options are available in {geo}?",
+        "What features matter most in a {product_line} for {use_case}?",
+        "How can I choose a reliable {keyword} for everyday use?",
+        "What are the advantages of foldable devices compared with standard smartphones?",
+        "How do I compare battery life, camera quality, and performance in smartphones?",
+        "Which products are suitable for {use_case} in the {industry} market?",
     ],
 
     # ── Comparative ───────────────────────────────────────────────────────────
     # User is evaluating options. Most valuable intent — brand is directly named.
     IntentCategory.COMPARATIVE: [
-        "How does {brand} compare to {competitor} for {use_case}?",
-        "{brand} vs {competitor}: which platform is better for {industry}?",
-        "What are the main differences between {brand} and {competitor}?",
-        "Which tool is more accurate for {keyword} — {brand} or {competitor}?",
-        "Compare {brand} and {competitor} in terms of pricing, features, and support.",
-        "For a {audience}, would {brand} or {competitor} be the better choice?",
-        "How do {brand} and {competitor} handle {use_case} differently?",
-        "Which platform offers better {keyword} reporting — {brand} or {competitor}?",
-        "What makes {brand} stand out from {competitor} in the {industry} market?",
-        "Is {brand} more reliable than {competitor} for enterprise {use_case}?",
+        "How do {brand} smartphones compare with {competitor} for {use_case}?",
+        "{brand} vs {competitor}: which brand offers better {product_line} options?",
+        "What are the main differences between {brand} and {competitor} phones?",
+        "Compare {brand} and {competitor} on camera, battery life, and performance.",
+        "Which is a better choice for {audience}, {brand} or {competitor}?",
+        "How do {brand} and {competitor} compare for {use_case}?",
+        "Which brand has more suitable {product_line} options for buyers in {geo}?",
+        "Compare the value of {brand} and {competitor} phones across price ranges.",
+        "What makes {brand} different from {competitor} in the {industry} market?",
+        "Is a {brand} phone or a {competitor} phone more suitable for {use_case}?",
     ],
 
     # ── Transactional ─────────────────────────────────────────────────────────
     # User is ready to act. Purchase, trial, pricing research.
     IntentCategory.TRANSACTIONAL: [
-        "How much does {brand} cost for a {industry} company with 500 employees?",
-        "Does {brand} offer a free trial or demo for enterprise customers?",
-        "What is the pricing model for {brand} — per seat, per usage, or flat fee?",
-        "How do I get started with {brand} for {use_case}?",
-        "Where can I book a demo of {brand} for my {audience}?",
-        "Does {brand} offer custom pricing for large-scale {industry} deployments?",
-        "What implementation support does {brand} provide during onboarding?",
-        "How quickly can {brand} be integrated into an existing {industry} tech stack?",
-        "What is the ROI of investing in {brand} for {use_case}?",
-        "Are there any discounts or annual plans available for {brand}?",
+        "What is the current price of {brand} {keyword} in {geo}?",
+        "Where can I buy a {brand} smartphone in {geo}?",
+        "Are there trade-in offers for {brand} phones in {geo}?",
+        "How do I choose a {brand} phone for {use_case}?",
+        "Where can I compare current {brand} phone models and prices?",
+        "Does {brand} offer financing or installment plans for smartphones?",
+        "What should I check before buying a {brand} phone online?",
+        "Are refurbished {brand} phones available from authorized sellers?",
+        "How can I find an authorized {brand} retailer near me in {geo}?",
+        "Which {brand} phone should I consider for a budget of my choice?",
     ],
 
     # ── Problem-Aware ─────────────────────────────────────────────────────────
     # User has a pain point and is searching for a category of solution.
     # Brand may or may not be mentioned — high opportunity for brand insertion.
     IntentCategory.PROBLEM_AWARE: [
-        "My brand doesn't appear in ChatGPT answers — how do I fix that?",
-        "How can I find out if AI assistants are mentioning my competitors more than my brand?",
-        "I have no visibility into how LLMs represent my company — what tool can help?",
-        "How do I measure my brand's presence in AI-generated content at scale?",
-        "We're losing market share in AI search — what strategies actually work for {keyword}?",
-        "How do I track whether {competitor} is outperforming us in AI-generated recommendations?",
-        "What should {industry} companies do when their brand visibility in AI drops?",
-        "I can't tell if our content strategy is improving our {keyword} — how do I measure it?",
-        "How do I diagnose why my {industry} brand is invisible to LLMs?",
-        "What is the fastest way to improve brand mentions in AI assistant responses?",
+        "My phone battery drains quickly; what should I check before choosing a replacement?",
+        "How can I take clearer photos in low light with a smartphone?",
+        "What should I do if my phone gets slow during gaming or multitasking?",
+        "I need a phone that lasts through a full day of video streaming; what should I compare?",
+        "Which smartphone features can help with {use_case}?",
+        "How do I choose a phone that works well for {use_case} without overspending?",
+        "What should I consider if I am switching from an iPhone to an Android phone?",
+        "How can I make a large smartphone easier to use one-handed?",
+        "What should I look for in a durable phone for frequent travel?",
+        "How do I compare phone repair and warranty options in {geo}?",
     ],
 
     # ── Feature-Aware ─────────────────────────────────────────────────────────
     # User knows the category, wants to verify a specific capability.
     IntentCategory.FEATURE_AWARE: [
-        "Does {brand} support tracking brand mentions across multiple AI models simultaneously?",
-        "Can {brand} monitor {keyword} in real time or only on a scheduled basis?",
-        "Does {brand} provide sentiment analysis on AI-generated brand mentions?",
-        "Can {brand} track competitor mentions alongside brand mentions in the same report?",
-        "Does {brand} have an API for integrating {keyword} data into our BI tools?",
-        "Can {brand} export reports to PDF, CSV, or connect to Tableau?",
-        "Does {brand} support {keyword} tracking across non-English language models?",
-        "Is {brand} able to identify which specific prompts trigger brand mentions?",
-        "Does {brand} offer white-label reporting for {audience}?",
-        "Can {brand} generate automated alerts when brand sentiment changes significantly?",
+        "Does {brand} offer a {product_line} with a camera suited to {use_case}?",
+        "Which {brand} phones support a foldable display?",
+        "Do {brand} smartphones support fast charging and wireless charging?",
+        "What accessibility features are available on {brand} phones?",
+        "Does {brand} offer a phone with enough storage for content creation?",
+        "Which {brand} devices support AI-powered assistance?",
+        "Can a {brand} phone handle gaming and multitasking well?",
+        "What water and dust resistance do current {brand} phones offer?",
+        "Do {brand} phones receive long-term software and security updates?",
+        "Which {brand} phones work with Galaxy Watch and Galaxy Buds?",
     ],
 
     # ── Alternative ───────────────────────────────────────────────────────────
     # User is dissatisfied with current tool or wants to compare the whole market.
     IntentCategory.ALTERNATIVE: [
-        "What are the best alternatives to {competitor} for {use_case}?",
-        "Which {keyword} tools are better than {competitor} for {industry}?",
-        "I'm looking for a {competitor} replacement — what do you recommend for {use_case}?",
-        "What {keyword} platforms are available besides {competitor} and {brand}?",
-        "Are there any open-source alternatives to {competitor} for {keyword}?",
-        "What is the most affordable alternative to {competitor} for small {industry} teams?",
-        "Which {keyword} tool would you recommend instead of {competitor} for {geo} companies?",
-        "What are the top 5 {keyword} platforms if I'm not using {competitor}?",
-        "Which {industry} tools compete directly with {competitor} in the {keyword} space?",
-        "Is there a better option than {competitor} for a {audience} focused on {use_case}?",
+        "What are good alternatives to {competitor} phones for {use_case}?",
+        "Which smartphone brands should I compare with {competitor} in {geo}?",
+        "I want to switch from {competitor}; what should I consider from {brand}?",
+        "What phones offer features similar to {competitor} for {use_case}?",
+        "Which affordable alternatives to {competitor} are available in {geo}?",
+        "What are the best Android alternatives for someone considering {competitor}?",
+        "Which {industry} brands offer phones for mobile photography besides {competitor}?",
+        "What should I compare before replacing my {competitor} phone?",
+        "Is there a {brand} phone that could replace my {competitor} device?",
+        "Which smartphone brands are worth considering for {audience} besides {competitor}?",
     ],
 }
 
@@ -140,6 +141,7 @@ def render_template(
     industry:    str,
     audience:    str,
     geography:   list[str],
+    product_lines: list[str] | None = None,
     index:       int = 0,
 ) -> str:
     """
@@ -168,6 +170,7 @@ def render_template(
         competitor = competitors[index % len(competitors)],
         keyword    = keywords[index % len(keywords)],
         use_case   = use_cases[index % len(use_cases)] if use_cases else "brand visibility tracking",
+        product_line = product_lines[index % len(product_lines)] if product_lines else "smartphone",
         industry   = industry,
         audience   = audience,
         geo        = geography[index % len(geography)] if geography else "Global",

@@ -114,7 +114,9 @@ def run_pipeline(config: BaselineConfig) -> None:
         bool(os.getenv("OPENAI_API_KEY"))
         and os.getenv("OPENAI_API_KEY") != "your_openai_api_key_here"
     )
-    mode = GREEN("LIVE (OpenAI GPT-4o)") if has_key else YELLOW("TEMPLATE (no API key)")
+    mode = GREEN("LIVE (OpenAI GPT-4o)") if has_key else YELLOW(
+        "SIMULATED (no API key; not real model results)"
+    )
 
     print(CYAN(BANNER))
     print(BOLD("=" * 60))
@@ -131,6 +133,8 @@ def run_pipeline(config: BaselineConfig) -> None:
     print(BOLD("(1) Generating synthetic prompts..."))
     t0 = time.time()
     raw_collection = build_prompt_collection(config)
+    if not raw_collection.prompts:
+        raise RuntimeError("Prompt generation returned no prompts; stopping without a report.")
     elapsed = time.time() - t0
     print(f"    {GREEN('OK')} {len(raw_collection.prompts)} prompts generated  "
           f"{DIM(f'({elapsed:.1f}s)')}\n")
@@ -168,17 +172,26 @@ def run_pipeline(config: BaselineConfig) -> None:
     print()
 
     prompts = collection.prompts
+    if not prompts:
+        raise RuntimeError("Prompt validation removed every prompt; stopping without a report.")
 
     # ── Step 3: Dispatch to LLM ───────────────────────────────────────────────
     print(BOLD("(3) Dispatching prompts to LLM..."))
     t0 = time.time()
-    responses = run_dispatch(prompts)
+    responses = run_dispatch(
+        prompts,
+        brand_name=config.brand_name,
+        competitors=config.competitors,
+    )
     ok_count  = sum(1 for r in responses if not r.error)
     err_count = len(responses) - ok_count
     elapsed   = time.time() - t0
     err_str   = f"  {RED(str(err_count) + ' errors')}" if err_count else ""
     print(f"    {GREEN('OK')} {ok_count} responses received{err_str}  "
           f"{DIM(f'({elapsed:.1f}s)')}\n")
+    if not ok_count:
+        details = "; ".join(r.error or "unknown error" for r in responses[:3])
+        raise RuntimeError(f"All model dispatches failed; no report was saved. {details}")
 
     # ── Step 4: NLP Evaluation ────────────────────────────────────────────────
     print(BOLD("(4) Running NLP evaluation (LLM-as-a-Judge)..."))
@@ -191,7 +204,10 @@ def run_pipeline(config: BaselineConfig) -> None:
 
     # ── Step 5: Build and save report ─────────────────────────────────────────
     print(BOLD("(5) Building and saving report..."))
-    report = build_report(config, prompts, evaluations, score, div_report)
+    report = build_report(
+        config, prompts, evaluations, score, div_report,
+        execution_mode="live" if has_key else "simulated",
+    )
     print(f"    {GREEN('OK')} Saved -> reports/{report.run_id}.json\n")
 
     # ── Step 6: Final summary ─────────────────────────────────────────────────

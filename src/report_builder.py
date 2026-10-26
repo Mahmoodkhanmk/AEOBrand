@@ -10,6 +10,7 @@ Responsibilities:
 
 import json
 import os
+import tempfile
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,6 +35,7 @@ def build_report(
     evaluations: list[ChunkEvaluation],
     score: BrandScore,
     diversity_report: Optional[PromptDiversityReport] = None,
+    execution_mode: str = "live",
 ) -> RunReport:
     """
     Assemble and persist a RunReport.
@@ -54,6 +56,7 @@ def build_report(
     report = RunReport(
         run_id=run_id,
         timestamp=timestamp,
+        execution_mode=execution_mode,
         config=config,
         diversity_report=diversity_report,
         prompts_used=prompts,
@@ -70,8 +73,20 @@ def _save_report(report: RunReport) -> Path:
     _REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     filepath = _REPORTS_DIR / f"{report.run_id}.json"
 
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(report.model_dump(), f, indent=2, default=str)
+    temp_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=_REPORTS_DIR,
+            prefix=f".{report.run_id}.", suffix=".tmp", delete=False,
+        ) as f:
+            temp_path = Path(f.name)
+            json.dump(report.model_dump(), f, indent=2, default=str)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temp_path, filepath)
+    finally:
+        if temp_path is not None and temp_path.exists():
+            temp_path.unlink()
 
     return filepath
 

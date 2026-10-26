@@ -1,0 +1,81 @@
+# Samsung Mobile AEO Brand Configuration
+
+brand_name: "Samsung Mobile"
+
+competitors:
+  - "Apple iPhone"
+  - "Google Pixel"
+  - "OnePlus"
+  - "Xiaomi"
+  - "OPPO"
+  - "Vivo"
+
+keywords:
+  - "Samsung smartphones"
+  - "Samsung Galaxy"
+  - "Android phones"
+  - "Samsung mobile phones"
+  - "Samsung flagship phones"
+  - "Samsung foldable phones"
+  - "Galaxy AI"
+
+domain_context: >
+  Samsung Mobile is a global smartphone manufacturer known for the
+  Galaxy smartphone lineup, foldable devices, tablets, wearables,
+  and AI-powered mobile experiences. The company serves consumer,
+  business, and enterprise customers with devices across premium,
+  mid-range, and budget segments.
+
+industry: "Consumer Electronics"
+
+geography:
+  - "Global"
+  - "United States"
+  - "India"
+  - "Europe"
+  - "South Korea"
+  - "Middle East"
+
+product_lines:
+  - "Galaxy S Series"
+  - "Galaxy Z Fold"
+  - "Galaxy Z Flip"
+  - "Galaxy A Series"
+  - "Galaxy M Series"
+  - "Galaxy Tab"
+  - "Galaxy Watch"
+  - "Galaxy Buds"
+
+use_cases:
+  - "mobile photography"
+  - "gaming"
+  - "business productivity"
+  - "AI-powered assistance"
+  - "content creation"
+  - "video streaming"
+  - "enterprise mobility"
+  - "multitasking"
+
+target_audience: >
+  Smartphone buyers, technology enthusiasts, students, professionals,
+  enterprise users, mobile gamers, creators, and consumers looking
+  for Android devices across multiple price segments.
+
+num_prompts: 30
+
+intent_mix:
+  informational: 25
+  comparative: 25
+  transactional: 15
+  problem_aware: 15
+  feature_aware: 10
+  alternative: 10
+
+negative_keywords:
+  - "television"
+  - "refrigerator"
+  - "washing machine"
+  - "microwave"
+  - "home appliances"
+
+min_diversity_score: 0.80
