@@ -1,0 +1,64 @@
+
+# AEOBrand Configuration - Samsung Smartphones
+
+# Brand Information
+brand_name: "Samsung"
+
+competitors:
+  - "Apple"
+  - "Google Pixel"
+  - "OnePlus"
+
+keywords:
+  - "Samsung Galaxy phones"
+  - "Android smartphones"
+  - "flagship smartphones"
+  - "foldable smartphones"
+  - "mid-range smartphones"
+
+domain_context: >
+  Samsung is a consumer electronics brand. This configuration
+  focuses on Samsung Galaxy smartphones in India, including
+  the Galaxy S, Galaxy Z, and Galaxy A series. Customers
+  compare smartphones based on camera quality, battery life,
+  performance, display, price, and software features.
+
+# Industry and Geography
+industry: "Consumer Electronics / Smartphones"
+
+geography:
+  - "India"
+
+# Products
+product_lines:
+  - "Galaxy S series smartphone"
+  - "Galaxy Z series foldable smartphone"
+  - "Galaxy A series smartphone"
+  - "mid-range smartphone"
+
+# Customer Use Cases
+use_cases:
+  - "taking photos and recording videos"
+  - "gaming and multitasking"
+  - "choosing a phone with good battery life"
+  - "buying a smartphone for everyday use"
+  - "finding a foldable smartphone"
+
+# Target Audience
+target_audience: "smartphone buyers in India"
+
+# Prompt Generation
+num_prompts: 15
+
+intent_mix:
+  informational: 25
+  comparative: 25
+  transactional: 15
+  problem_aware: 15
+  feature_aware: 10
+  alternative: 10
+
+# Quality Controls
+negative_keywords: []
+
+min_diversity_score: 0.75
