@@ -1,0 +1,41 @@
+# AEOBrand test configuration for Nike
+# Used only for offline/demo prompt generation until real model calls are configured.
+brand_name: "Nike"
+competitors:
+  - "Adidas"
+  - "Puma"
+  - "ASICS"
+keywords:
+  - "running shoes"
+  - "training shoes"
+  - "sportswear"
+  - "athletic footwear"
+domain_context: >
+  Nike is a sportswear and athletic footwear brand. This test focuses on how
+  AI assistants mention Nike in responses to realistic running, fitness,
+  footwear, and sports clothing questions.
+industry: "athletic footwear and sportswear"
+geography:
+  - "India"
+product_lines:
+  - "running shoe"
+  - "training shoe"
+  - "sports jacket"
+  - "sportswear item"
+use_cases:
+  - "choosing running shoes for daily training"
+  - "finding comfortable footwear for long-distance running"
+  - "selecting clothing for gym workouts"
+  - "choosing shoes for indoor fitness training"
+  - "finding breathable sportswear for warm weather"
+target_audience: "runners and fitness enthusiasts"
+num_prompts: 15
+intent_mix:
+  informational: 25
+  comparative: 25
+  transactional: 15
+  problem_aware: 15
+  feature_aware: 10
+  alternative: 10
+negative_keywords: []
+min_diversity_score: 0.70
