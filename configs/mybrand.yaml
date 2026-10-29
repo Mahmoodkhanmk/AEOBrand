@@ -1,0 +1,59 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# AEOBrand Config Template — Copy this file to configure a new brand
+# ─────────────────────────────────────────────────────────────────────────────
+# Instructions:
+#   1. Copy this file: cp configs/example_template.yaml configs/mybrand.yaml
+#   2. Fill in every field below
+#   3. Run: python src/main.py --config configs/mybrand.yaml
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── REQUIRED FIELDS ───────────────────────────────────────────────────────────
+
+brand_name: "YourBrandName"            # The brand you want to track in AI engines
+
+competitors:                           # At least 1 direct competitor
+  - "CompetitorA"
+  - "CompetitorB"
+
+keywords:                              # At least 2 keywords (how users find you)
+  - "your primary keyword"
+  - "your secondary keyword"
+
+domain_context: >
+  Describe what your brand does in 1-3 sentences. This is used as context
+  for the AI to generate realistic test queries. Be specific about the
+  industry, product type, and target customer.
+
+# ── RECOMMENDED FIELDS ────────────────────────────────────────────────────────
+
+industry: "Your Industry"              # e.g. "FinTech", "E-Commerce", "HealthTech"
+
+geography:                             # Markets where your brand operates
+  - "United States"
+
+product_lines:                         # Your named products or features (optional)
+  - "Product Name 1"
+
+use_cases:                             # What problems your product solves (optional)
+  - "solve [specific problem]"
+
+target_audience: "describe your buyer persona"
+
+# ── PROMPT GENERATION CONTROLS ────────────────────────────────────────────────
+
+num_prompts: 10                        # How many test queries to generate (3-100)
+
+intent_mix:                            # Percentage split — MUST sum to 100
+  informational: 25
+  comparative:   25
+  transactional: 15
+  problem_aware: 15
+  feature_aware: 10
+  alternative:   10
+
+# ── QUALITY CONTROLS ──────────────────────────────────────────────────────────
+
+negative_keywords:                     # Topics to exclude from prompts
+  - "example topic to avoid"
+
+min_diversity_score: 0.70              # Minimum prompt diversity (0.0-1.0)
